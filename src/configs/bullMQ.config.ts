@@ -1,5 +1,6 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RegisterQueueAsyncOptions, SharedBullAsyncConfiguration } from '@nestjs/bullmq';
+import { RegisterQueueAsyncOptions, RegisterQueueOptions, SharedBullAsyncConfiguration } from '@nestjs/bullmq';
+import { QUEUE_CHAT_NAME } from '../chat/chat.bull.constants';
 
 export const bullMQConfig: SharedBullAsyncConfiguration = {
     imports: [ConfigModule],
@@ -10,8 +11,8 @@ export const bullMQConfig: SharedBullAsyncConfiguration = {
             port: config.get<number>('REDIS_PORT'),
             password: config.get<string>('REDIS_PASSWORD'),
             username: config.get<string>('REDIS_USERNAME'),
-            tls: {},
-            maxRetriesPerRequest: 1000000,
+            // tls: {},
+            maxRetriesPerRequest: null,
         }
         console.log(connectData)
         return {
@@ -26,4 +27,8 @@ export const queueAsyncConfig: RegisterQueueAsyncOptions = {
   useFactory: (consfigService: ConfigService) => ({
     name: consfigService.get('QUEUE_NOTIFICATION_NAME'),
   })
+}
+
+export const chatQueueConfig: RegisterQueueOptions = {
+  name: QUEUE_CHAT_NAME,
 }

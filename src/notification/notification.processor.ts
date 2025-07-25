@@ -5,7 +5,6 @@ import { ConfigService } from "@nestjs/config";
 import { OnModuleInit } from "@nestjs/common";
 
 const queueName = process.env.QUEUE_NOTIFICATION_NAME || 'notification'
-console.log('=======================QUEEUEU NAME: ', process.env.QUEUE_NOTIFICATION_NAME)
 @Processor(queueName)
 export class NotificationProcessor extends WorkerHost{
     constructor(

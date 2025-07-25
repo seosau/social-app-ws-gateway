@@ -5,6 +5,7 @@ import { typeOrmAsyncConfig } from './configs/typeorm.config';
 import { BullModule } from '@nestjs/bullmq';
 import { bullMQConfig, queueAsyncConfig } from './configs/bullMQ.config';
 import { NotificationModule } from './notification/notification.module';
+import { ChatModule } from './chat/chat.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -14,6 +15,7 @@ import { NotificationModule } from './notification/notification.module';
     BullModule.forRootAsync(bullMQConfig),
     BullModule.registerQueueAsync(queueAsyncConfig),
     NotificationModule,
+    ChatModule, 
   ],
   controllers: [],
   providers: [],

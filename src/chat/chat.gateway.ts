@@ -2,25 +2,21 @@ import { ConfigService } from '@nestjs/config';
 import { WebSocketGateway, SubscribeMessage, MessageBody, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({
-  // cors: {
-  //   origin: '*', // Adjust based on your frontend URL
-  // },
-})
-export class NotificationGateway {
+@WebSocketGateway()
+export class ChatGateway {
   @WebSocketServer()
   server: Server
 
   constructor(
     private readonly config: ConfigService,
-  ) { }
+  ) {}
 
   private client = new Map<string, Socket>()
 
   handleConnection(client: Socket) {
     const userId = client.handshake.query.userId as string
 
-    console.log('User ID to connect: ', userId)
+    console.log('User id to connect: ', userId)
     this.client.set(userId, client);
   }
 
@@ -31,20 +27,22 @@ export class NotificationGateway {
     }
   }
 
-
-  sendNotificationToUser(userId: string, payload: any) {
+  sendMessageToUser(userId: string, payload: any) {
     const socket = this.client.get(userId);
-
-    console.log('send job: =====================, ', payload)
+      console.log('Checking is receiver online...')
     if (socket) {
-      console.log('Have connection')
-      socket.emit(this.config.get('WEBSOCKET_NOTIFICATION_NAME'), payload)
+      console.log('Receiver is online')
+      socket.emit(this.config.get('WEBSOCKET_CHAT_NAME'), payload)
     }
   }
 
-  @SubscribeMessage('subscribeToNotifications')
-  handleSubscribe(client: any, payload: any) {
-    // You can implement custom subscription logic here
-    return { event: 'subscribed', data: { message: 'Subscribed to notifications' } };
+  @SubscribeMessage('chat::receiveMessage')
+  handleSubcribeMessage() {
+    return {
+      event: 'subcribed',
+      data: {
+        message: 'Subcribed to receive message'
+      }
+    }
   }
 }
