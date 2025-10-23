@@ -27,12 +27,19 @@ export class ChatGateway {
     }
   }
 
-  sendMessageToUser(userId: string, payload: any) {
-    const socket = this.client.get(userId);
-      console.log('Checking is receiver online...')
-    if (socket) {
-      console.log('Receiver is online')
-      socket.emit(this.config.get('WEBSOCKET_CHAT_NAME'), payload)
+  sendMessageToUser(senderId: string, payload: any) {
+    // const socket = this.client.get(userId);
+    //   console.log('Checking is receiver online...')
+    // if (socket) {
+    //   console.log('Receiver is online')
+    //   socket.emit(this.config.get('WEBSOCKET_CHAT_NAME'), payload)
+    // }
+    for (const [userId, socket] of this.client.entries()) {
+      if (userId !== senderId) {
+        console.log(`Send message to ${userId}`);
+        console.log(`Message: ${payload.user.fullName}`);
+        socket.emit(this.config.get('WEBSOCKET_CHAT_NAME'), payload);
+      }
     }
   }
 
